@@ -1,9 +1,14 @@
 package com.linh.developertiles.presentation
 
+import android.net.ProxyInfo
+import android.net.wifi.WifiConfiguration
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.view.Surface
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -26,7 +31,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    Button(onClick = {
+                        val config = WifiConfiguration().apply {
+                            httpProxy = ProxyInfo.buildDirectProxy("192.168.1.1", 8888)
+                        }
+
+                        val wifiManager = applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+                        val result = wifiManager.updateNetwork(config)
+                        Timber.d("Update network result $result")
+                    }) {
+                        Text(text = "Set proxy")
+                    }
                 }
             }
         }
